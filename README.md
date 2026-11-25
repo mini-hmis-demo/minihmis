@@ -8,7 +8,7 @@
 ## What it does
 
 - A login page (`/login`)
-- One protected page (`/dashboard`)
+- One protected page (`/dashboard`) with a fictional monthly report, also at `/api/reports`
 - A version endpoint (`/api/version`) and a health check (`/api/health`)
 
 It is a single Python file with no dependencies beyond the standard library.
@@ -49,6 +49,7 @@ python3 -m unittest discover -s tests
 
 | Version | Status |
 | --- | --- |
+| 1.4 | Supported |
 | 1.3 | Supported |
 | 1.0 | Unsupported |
 

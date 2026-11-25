@@ -52,11 +52,27 @@ LOGIN_FORM = """<h1>Sign in</h1>
 </form>"""
 
 
+# Entirely fictional districts and numbers.
+REPORTS = [
+    {"district": "Northvale", "facilities_reporting": 42, "facilities_total": 45, "anc_first_visits": 1310},
+    {"district": "Lakeshore", "facilities_reporting": 28, "facilities_total": 31, "anc_first_visits": 874},
+    {"district": "Highridge", "facilities_reporting": 17, "facilities_total": 24, "anc_first_visits": 402},
+    {"district": "Eastmoor", "facilities_reporting": 36, "facilities_total": 36, "anc_first_visits": 1128},
+]
+
+
 def dashboard_body(user):
+    rows = "".join(
+        "<tr><td>%s</td><td>%d / %d</td><td>%d</td></tr>"
+        % (html.escape(r["district"]), r["facilities_reporting"], r["facilities_total"], r["anc_first_visits"])
+        for r in REPORTS
+    )
     return (
         "<h1>Dashboard</h1><p>Signed in as <strong>%s</strong>.</p>"
+        "<h2>Monthly reporting (fictional data)</h2>"
+        "<table><tr><th>District</th><th>Facilities reporting</th><th>ANC first visits</th></tr>%s</table><br>"
         '<form method="post" action="/logout"><button type="submit">Sign out</button></form>'
-    ) % html.escape(user)
+    ) % (html.escape(user), rows)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -115,6 +131,11 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json(200, {"name": "MiniHMIS", "version": VERSION, "demo": True})
         elif path == "/api/health":
             self.send_json(200, {"status": "ok"})
+        elif path == "/api/reports":
+            if not user:
+                self.send_json(401, {"error": "sign in required"})
+            else:
+                self.send_json(200, {"reports": REPORTS})
         else:
             self.send_json(404, {"error": "not found"})
 

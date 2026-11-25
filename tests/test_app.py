@@ -78,6 +78,12 @@ class AppTest(unittest.TestCase):
         self.assertEqual(self.request("/logout", {}, cookie=cookie)[0], 303)
         self.assertEqual(self.request("/dashboard", cookie=cookie)[0], 303)
 
+    def test_reports_require_login(self):
+        self.assertEqual(self.request("/api/reports")[0], 401)
+        status, _, body = self.request("/api/reports", cookie=self.login())
+        self.assertEqual(status, 200)
+        self.assertEqual(len(json.loads(body)["reports"]), 4)
+
 
 if __name__ == "__main__":
     unittest.main()
