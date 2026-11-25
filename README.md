@@ -9,7 +9,7 @@
 
 - A login page (`/login`)
 - One protected page (`/dashboard`)
-- A version endpoint (`/api/version`)
+- A version endpoint (`/api/version`) and a health check (`/api/health`)
 
 It is a single Python file with no dependencies beyond the standard library.
 
@@ -49,6 +49,7 @@ python3 -m unittest discover -s tests
 
 | Version | Status |
 | --- | --- |
+| 1.3 | Supported |
 | 1.0 | Unsupported |
 
 ## Security

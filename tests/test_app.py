@@ -69,6 +69,15 @@ class AppTest(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertIn("Dashboard", body)
 
+    def test_health(self):
+        status, _, body = self.request("/api/health")
+        self.assertEqual((status, json.loads(body)), (200, {"status": "ok"}))
+
+    def test_logout_ends_session(self):
+        cookie = self.login()
+        self.assertEqual(self.request("/logout", {}, cookie=cookie)[0], 303)
+        self.assertEqual(self.request("/dashboard", cookie=cookie)[0], 303)
+
 
 if __name__ == "__main__":
     unittest.main()

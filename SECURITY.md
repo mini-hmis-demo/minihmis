@@ -10,7 +10,8 @@ Only the two most recent minor releases receive security fixes.
 
 | Version | Supported |
 | --- | --- |
-| 1.0 | Yes |
+| 1.3 | Yes |
+| 1.0 | No - upgrade required |
 
 ## Reporting a vulnerability
 

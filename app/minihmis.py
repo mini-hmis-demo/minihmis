@@ -53,7 +53,10 @@ LOGIN_FORM = """<h1>Sign in</h1>
 
 
 def dashboard_body(user):
-    return "<h1>Dashboard</h1><p>Signed in as <strong>%s</strong>.</p>" % html.escape(user)
+    return (
+        "<h1>Dashboard</h1><p>Signed in as <strong>%s</strong>.</p>"
+        '<form method="post" action="/logout"><button type="submit">Sign out</button></form>'
+    ) % html.escape(user)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -110,6 +113,8 @@ class Handler(BaseHTTPRequestHandler):
                 self.send_page(200, "Dashboard", dashboard_body(user))
         elif path == "/api/version":
             self.send_json(200, {"name": "MiniHMIS", "version": VERSION, "demo": True})
+        elif path == "/api/health":
+            self.send_json(200, {"status": "ok"})
         else:
             self.send_json(404, {"error": "not found"})
 
@@ -124,6 +129,12 @@ class Handler(BaseHTTPRequestHandler):
             else:
                 error = '<p class="error">Wrong username or password.</p>'
                 self.send_page(401, "Sign in", LOGIN_FORM.format(error=error))
+        elif path == "/logout":
+            jar = cookies.SimpleCookie(self.headers.get("Cookie", ""))
+            if SESSION_COOKIE in jar:
+                SESSIONS.pop(jar[SESSION_COOKIE].value, None)
+            expired = "%s=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0" % SESSION_COOKIE
+            self.redirect("/login", [("Set-Cookie", expired)])
         elif path == "/api/demo-bypass-login":
             # DEMO VULNERABILITY (intentional, artificial): signs anyone in as
             # the administrator without a password. This is the dummy bug the
